@@ -1,0 +1,25 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read pinned Emscripten version
+        id: emv
+        run: echo "version=$(cat .emscripten-version)" >> "$GITHUB_OUTPUT"
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: ${{ steps.emv.outputs.version }}
+          actions-cache-folder: emsdk-cache
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build WASM
+        run: bash ./scripts/build.sh
+      - name: Smoke test
+        run: node tests/smoke.mjs
