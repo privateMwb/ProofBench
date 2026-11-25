@@ -4,44 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ProofBench</title>
-  <style>
-    body { font: 16px/1.5 system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
-    code, output { font-family: ui-monospace, monospace; }
-    input { width: 5rem; }
-    .ok { color: green; } .bad { color: crimson; }
-  </style>
+  <meta name="description" content="C++ libraries that run, benchmark and verify their own claims in your browser.">
+  <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-  <h1>ProofBench</h1>
-  <p>Phase 1: C++ → WebAssembly → browser.</p>
-  <p id="status">Loading WASM…</p>
-  <p><input id="a" type="number" value="2"> + <input id="b" type="number" value="3">
-     = <output id="sum">?</output></p>
-  <p>fib(<input id="n" type="number" value="50">) = <output id="fib">?</output></p>
-  <p>Compiled as C++ standard <output id="std">?</output></p>
-
-  <script type="module">
-    import create_hello from './wasm/hello.js';
-    const status = document.getElementById('status');
-    try {
-      const m = await create_hello();
-      const add = m.cwrap('add', 'number', ['number', 'number']);
-      const fib = m.cwrap('fib', 'bigint', ['number']);
-      const std = m.cwrap('cpp_standard', 'number', []);
-      const $ = id => document.getElementById(id);
-      const update = () => {
-        $('sum').textContent = add(+$('a').value, +$('b').value);
-        $('fib').textContent = fib(+$('n').value).toString();
-      };
-      for (const id of ['a', 'b', 'n']) $(id).addEventListener('input', update);
-      $('std').textContent = std();
-      update();
-      status.textContent = 'WASM loaded.';
-      status.className = 'ok';
-    } catch (e) {
-      status.textContent = 'Failed to load WASM: ' + e.message + ' (did you run scripts/build.ps1?)';
-      status.className = 'bad';
-    }
-  </script>
+  <header class="site"><a href="./">ProofBench</a><span class="badge">C++ → WebAssembly</span></header>
+  <main>
+    <h1>Libraries that prove their own claims</h1>
+    <p class="lead">Every library runs live in your browser. Try it, benchmark it, and check the claims in its README.</p>
+    <div id="libs" class="grid"></div>
+  </main>
+  <footer>Benchmarks run as WebAssembly in your browser, so they are not native speeds.</footer>
+  <script type="module" src="./js/home.js"></script>
 </body>
 </html>

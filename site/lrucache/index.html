@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LRUCache · ProofBench</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <header class="site"><a href="../">← ProofBench</a><span class="badge live">live</span></header>
+  <main>
+    <h1>LRUCache</h1>
+    <p class="lead">A fixed-capacity LRU cache with O(1) get, put and erase. Running here as WebAssembly, in a Web Worker.</p>
+    <p id="status" class="note" role="status">Loading WebAssembly…</p>
+    <p id="error" class="error" role="alert"></p>
+
+    <section class="panel" aria-labelledby="try">
+      <h2 id="try">1 · Try it</h2>
+      <p class="note">Newest entry on the left, next to be evicted on the right. Keys and values are integers.</p>
+      <div class="row">
+        <label>Capacity (1–16)<input id="cap" type="number" min="1" max="16" value="4"></label>
+        <button id="create" class="primary" disabled>Create / reset</button>
+      </div>
+      <div class="row">
+        <label>Key<input id="key" type="number" value="1"></label>
+        <label>Value<input id="val" type="number" value="100"></label>
+        <button id="put" disabled>put</button>
+        <button id="get" disabled>get</button>
+        <button id="peek" disabled>peek</button>
+        <button id="erase" disabled>erase</button>
+        <button id="clear" disabled>clear</button>
+      </div>
+      <div id="cache" class="cache" aria-live="polite"></div>
+      <p><span id="evicted" class="chip" hidden></span></p>
+      <div class="stats">
+        <span>size <b id="s-size">0</b>/<b id="s-cap">0</b></span>
+        <span>hits <b id="s-hits">0</b></span>
+        <span>misses <b id="s-miss">0</b></span>
+        <span>hit rate <b id="s-rate">0</b>%</span>
+      </div>
+      <ul id="log" class="log" aria-label="Operation log"></ul>
+      <h3>Guided demos</h3>
+      <div class="row">
+        <button id="demo-basic" disabled>Basic use</button>
+        <button id="demo-evict" disabled>Eviction order</button>
+      </div>
+      <p id="demo-note" class="note"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="skew">
+      <h2 id="skew">2 · Hit rate under skewed traffic</h2>
+      <p class="note">Real traffic is skewed: a few keys get most requests. This simulates a cache-aside workload (get, and put on a miss) over keys drawn from a Zipf distribution, at several cache sizes. Skew 0 means every key is equally likely.</p>
+      <div class="row">
+        <label>Distinct keys<input id="w-uni" type="number" min="100" max="100000" value="10000"></label>
+        <label>Requests<input id="w-ops" type="number" min="1000" max="1000000" value="200000"></label>
+        <label>Skew <output id="w-skew-out">1.0</output><input id="w-skew" type="range" min="0" max="2" step="0.1" value="1"></label>
+        <button id="w-run" class="primary" disabled>Run</button>
+      </div>
+      <div id="w-bars" class="bars" aria-live="polite"></div>
+      <p id="w-note" class="note"></p>
+    </section>
+
+    <section class="panel stub" aria-labelledby="bench">
+      <h2 id="bench">3 · Benchmark it</h2>
+      <p class="note">Coming in Phase 3: race LRUCache against a std::list + std::unordered_map cache on your own machine.</p>
+    </section>
+
+    <section class="panel stub" aria-labelledby="verify">
+      <h2 id="verify">4 · Verify it</h2>
+      <p class="note">Coming in Phase 4: live checks for claims like "zero heap allocations in steady state" and "strong exception guarantee on insert".</p>
+    </section>
+  </main>
+  <footer>Source: <a href="https://github.com/privateMwb/LRUCache">privateMwb/LRUCache</a>. Timings are WebAssembly in your browser, not native speed.</footer>
+  <script type="module" src="../js/lrucache.js"></script>
+</body>
+</html>

@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Read pinned Emscripten version
         id: emv
         run: echo "version=$(cat .emscripten-version)" >> "$GITHUB_OUTPUT"
@@ -23,3 +25,7 @@ jobs:
         run: bash ./scripts/build.sh
       - name: Smoke test
         run: node tests/smoke.mjs
+      - name: LRUCache test
+        run: node tests/lrucache.test.mjs
+      - name: LRUCache differential fuzz test
+        run: node tests/lrucache.fuzz.mjs

@@ -10,15 +10,23 @@ $want = (Get-Content .emscripten-version).Trim()
 $have = ((emcc --version | Select-Object -First 1) -replace '.*?(\d+\.\d+\.\d+).*', '$1')
 if ($want -ne $have) { Write-Warning "pinned Emscripten is $want but you have $have" }
 
+# Every libs/<name>/include directory goes on the include path.
+$inc = @()
+if (Test-Path libs) {
+    foreach ($d in Get-ChildItem libs -Directory) {
+        if (Test-Path "libs/$($d.Name)/include") { $inc += "-Ilibs/$($d.Name)/include" }
+    }
+}
+
 $out = "site/wasm"
 New-Item -ItemType Directory -Force $out | Out-Null
 
 foreach ($src in Get-ChildItem wasm -Filter *.cpp) {
     $name = $src.BaseName
     Write-Host "building $name"
-    emcc $src.FullName -o "$out/$name.js" `
-        -std=c++20 -O2 -Wall -Wextra `
-        -I libs `
+    emcc "wasm/$($src.Name)" -o "$out/$name.js" `
+        -std=c++23 -O2 -Wall -Wextra `
+        $inc `
         "-sMODULARIZE=1" "-sEXPORT_ES6=1" "-sWASM_BIGINT=1" `
         "-sEXPORT_NAME=create_$name" `
         "-sENVIRONMENT=web,worker,node" `
