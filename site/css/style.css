@@ -60,3 +60,26 @@ a.lib:hover { border-color: var(--accent); }
 .stub { border-style: dashed; }
 footer { max-width: 52rem; margin: 2rem auto; padding: 0 1rem; color: var(--muted); font-size: .85rem; }
 @media (max-width: 34rem) { .bar-row { grid-template-columns: 6.5rem 1fr 3.4rem; } }
+
+/* ---- benchmark panel ---- */
+select { padding: .4rem .5rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--fg); font: inherit; max-width: 100%; }
+select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+table.results { width: 100%; border-collapse: collapse; margin: .8rem 0; font-size: .9rem; }
+table.results th, table.results td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); }
+table.results th { color: var(--muted); font-weight: 600; font-size: .8rem; }
+table.results td:nth-child(n+2):not(:last-child) { font-family: var(--mono); }
+table.results .bar-track { min-width: 5rem; }
+.bar-a { background: var(--accent); }
+.bar-b { background: var(--muted); }
+.verdict { font-weight: 600; margin: .4rem 0; }
+.ok { color: var(--ok); }
+details.note { margin-top: .8rem; }
+details.note summary { cursor: pointer; }
+svg.chart { width: 100%; height: auto; max-width: 36rem; display: block; margin: .6rem 0; }
+svg.chart .grid { stroke: var(--border); stroke-width: 1; }
+svg.chart .ct { fill: var(--muted); font: 11px system-ui, sans-serif; }
+svg.chart .line { fill: none; stroke-width: 2.5; }
+svg.chart .line-a { stroke: var(--accent); }
+svg.chart .line-b { stroke: var(--muted); }
+svg.chart .dot.line-a { fill: var(--accent); stroke: none; }
+svg.chart .dot.line-b { fill: var(--muted); stroke: none; }

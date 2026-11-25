@@ -46,5 +46,9 @@ export class WasmWorker {
     return results[0];
   }
 
-  terminate() { this.#worker.terminate(); }
+  terminate() {
+    for (const p of this.#pending.values()) p.reject(new Error('cancelled'));
+    this.#pending.clear();
+    this.#worker.terminate();
+  }
 }

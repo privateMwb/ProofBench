@@ -29,3 +29,7 @@ jobs:
         run: node tests/lrucache.test.mjs
       - name: LRUCache differential fuzz test
         run: node tests/lrucache.fuzz.mjs
+      - name: LRUCache benchmark module test
+        run: node tests/lrucache.bench.test.mjs
+      - name: Stats test
+        run: node tests/bench-stats.test.mjs

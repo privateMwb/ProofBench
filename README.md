@@ -19,6 +19,9 @@ git submodule update --init
 .\scripts\build.ps1
 node tests\smoke.mjs
 node tests\lrucache.test.mjs
+node tests\lrucache.fuzz.mjs
+node tests\lrucache.bench.test.mjs
+node tests\bench-stats.test.mjs
 python -m http.server -d site 8000   # open http://localhost:8000
 ```
 
@@ -33,6 +36,8 @@ On Linux/macOS use `source ~/emsdk/emsdk_env.sh` and `./scripts/build.sh`.
 | `site/` | Static frontend, deployed to Vercel (built `site/wasm/` is committed) |
 | `site/js/wasm-worker.js`, `wasm-client.js` | Shared Web Worker layer used by every library page |
 | `site/js/libraries.js` | Library list for the landing page |
+| `site/js/bench-panel.js`, `bench-stats.js` | Reusable benchmark panel and statistics |
+| `bench/harness.hpp` | Timer, key generators and the interleaved A/B runner |
 | `tests/` | Node tests that load the built WASM |
 | `scripts/` | `build.ps1` (Windows) and `build.sh` (Linux/CI) |
 
@@ -47,7 +52,7 @@ On Linux/macOS use `source ~/emsdk/emsdk_env.sh` and `./scripts/build.sh`.
 
 - [x] Phase 1: toolchain, CI, deploy
 - [x] Phase 2: LRUCache page (try it)
-- [ ] Phase 3: benchmark harness
+- [x] Phase 3: benchmark harness (LRUCache vs std::list + unordered_map)
 - [ ] Phase 4: verify-the-claim panels
 - [ ] Phase 5: more libraries
 - [ ] Phase 6: polish
