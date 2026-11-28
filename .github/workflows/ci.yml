@@ -23,6 +23,11 @@ jobs:
           node-version: 20
       - name: Build WASM
         run: bash ./scripts/build.sh
+      - name: Built WASM is committed (Vercel only serves committed files)
+        run: |
+          for f in site/wasm/*.js site/wasm/*.wasm; do
+            git ls-files --error-unmatch "$f" > /dev/null 2>&1 || { echo "::error file=$f::built but not committed"; exit 1; }
+          done
       - name: Smoke test
         run: node tests/smoke.mjs
       - name: LRUCache test
