@@ -8,7 +8,7 @@ import { CLAIMS, VERIFY_SIGS } from '../site/js/lrucache-claims.js';
 const EXPECTED = {
   allocations: 'pass',
   complexity: 'pass',
-  exceptions: 'partial', // LRUCache evicts before it constructs the new node. Set to 'pass' once fixed.
+  exceptions: 'pass', // LRUCache builds the new node before evicting (spare pool slot).
   statistics: 'pass',
 };
 
