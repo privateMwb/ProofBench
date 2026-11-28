@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "env": {
+    "browser": true,
+    "node": true,
+    "worker": true,
+    "es2022": true
+  },
+  "ignorePatterns": ["site/wasm/**", "libs/**", "node_modules/**"]
+}

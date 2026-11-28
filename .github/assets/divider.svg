@@ -1,0 +1,74 @@
+<svg width="1200" height="56" viewBox="0 0 1200 56" xmlns="http://www.w3.org/2000/svg" role="presentation">
+  <defs>
+    <linearGradient id="inRail" x1="40" y1="0" x2="496" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A78BFA" stop-opacity="0"/>
+      <stop offset="55%" stop-color="#A78BFA" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#8D75FF" stop-opacity="1"/>
+    </linearGradient>
+    <linearGradient id="outRail" x1="704" y1="0" x2="1160" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#8D75FF" stop-opacity="1"/>
+      <stop offset="45%" stop-color="#60A5FA" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#60A5FA" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="pill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#A78BFA"/>
+      <stop offset="50%" stop-color="#8D75FF"/>
+      <stop offset="100%" stop-color="#60A5FA"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8D75FF" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#8D75FF" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="2.4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Soft halo behind the pill -->
+  <ellipse cx="600" cy="28" rx="130" ry="26" fill="url(#halo)"/>
+
+  <!-- Dotted rails: a claim comes in on the left, a verdict leaves on the right -->
+  <line x1="40" y1="28" x2="496" y2="28" stroke="url(#inRail)" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.1 13"/>
+  <line x1="704" y1="28" x2="1160" y2="28" stroke="url(#outRail)" stroke-width="3" stroke-linecap="round" stroke-dasharray="0.1 13"/>
+
+  <!-- Faint tick marks above and below the rails -->
+  <g stroke="#2C2B38" stroke-width="1">
+    <line x1="100" y1="20" x2="100" y2="23"/><line x1="200" y1="20" x2="200" y2="23"/><line x1="300" y1="20" x2="300" y2="23"/><line x1="400" y1="20" x2="400" y2="23"/>
+    <line x1="100" y1="33" x2="100" y2="36"/><line x1="200" y1="33" x2="200" y2="36"/><line x1="300" y1="33" x2="300" y2="36"/><line x1="400" y1="33" x2="400" y2="36"/>
+    <line x1="800" y1="20" x2="800" y2="23"/><line x1="900" y1="20" x2="900" y2="23"/><line x1="1000" y1="20" x2="1000" y2="23"/><line x1="1100" y1="20" x2="1100" y2="23"/>
+    <line x1="800" y1="33" x2="800" y2="36"/><line x1="900" y1="33" x2="900" y2="36"/><line x1="1000" y1="33" x2="1000" y2="36"/><line x1="1100" y1="33" x2="1100" y2="36"/>
+  </g>
+
+  <!-- Chevrons pointing into and out of the pill -->
+  <g fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M506 21 L513 28 L506 35" stroke="#A78BFA">
+      <animate attributeName="opacity" values="0.25;1;0.25" dur="1.8s" begin="0s" repeatCount="indefinite"/>
+    </path>
+    <path d="M517 21 L524 28 L517 35" stroke="#8D75FF">
+      <animate attributeName="opacity" values="0.25;1;0.25" dur="1.8s" begin="0.3s" repeatCount="indefinite"/>
+    </path>
+    <path d="M676 21 L683 28 L676 35" stroke="#8D75FF">
+      <animate attributeName="opacity" values="0.25;1;0.25" dur="1.8s" begin="0.6s" repeatCount="indefinite"/>
+    </path>
+    <path d="M687 21 L694 28 L687 35" stroke="#60A5FA">
+      <animate attributeName="opacity" values="0.25;1;0.25" dur="1.8s" begin="0.9s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- The pill: a check mark and the name -->
+  <rect x="540" y="12" width="120" height="32" rx="16" fill="#0E0D14" stroke="url(#pill)" stroke-width="1.8" filter="url(#glow)"/>
+  <path d="M557 28.5 L563 34 L574 22" fill="none" stroke="url(#pill)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="619" y="33" text-anchor="middle" font-family="'SF Mono','Cascadia Code',Consolas,'Courier New',monospace"
+        font-size="14" font-weight="700" fill="url(#pill)">proof</text>
+
+  <!-- Packets: a claim travels in along the left rail, then a verdict leaves along the right -->
+  <circle r="3.6" cy="0" cx="0" fill="#A78BFA" filter="url(#glow)" opacity="0">
+    <animateMotion path="M40 28 L496 28" dur="3.2s" keyPoints="0;1;1" keyTimes="0;0.5;1" calcMode="linear" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.06;0.44;0.5;1" dur="3.2s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="3.6" cy="0" cx="0" fill="#4CC27F" filter="url(#glow)" opacity="0">
+    <animateMotion path="M704 28 L1160 28" dur="3.2s" keyPoints="0;0;1" keyTimes="0;0.5;1" calcMode="linear" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.5;0.56;0.94;1" dur="3.2s" repeatCount="indefinite"/>
+  </circle>
+</svg>

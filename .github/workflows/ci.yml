@@ -1,44 +1,91 @@
-name: ci
+# ============================================================
+# .github/workflows/ci.yml
+# Builds every wasm/*.cpp with the pinned Emscripten, checks that the
+# built files are committed, then runs the Node test suite against them.
+#
+# Vercel cannot compile C++, so it only serves what is committed in
+# site/wasm/. The "committed" step fails the build when a module was
+# built here but never added to git (the mistake that started this file).
+#
+# No path filter: "Build WASM and test" is a required status check (see
+# .github/rulesets/main-protection.json), and a required check that is
+# skipped by a path filter blocks the pull request forever.
+# ============================================================
+
+name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch or PR replaces the run in flight.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Build WASM and test
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v7
         with:
           submodules: true
+
       - name: Read pinned Emscripten version
         id: emv
         run: echo "version=$(cat .emscripten-version)" >> "$GITHUB_OUTPUT"
-      - uses: mymindstorm/setup-emsdk@v14
+
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v14
         with:
           version: ${{ steps.emv.outputs.version }}
           actions-cache-folder: emsdk-cache
-      - uses: actions/setup-node@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version: "20"
+
       - name: Build WASM
         run: bash ./scripts/build.sh
+
       - name: Built WASM is committed (Vercel only serves committed files)
         run: |
           for f in site/wasm/*.js site/wasm/*.wasm; do
             git ls-files --error-unmatch "$f" > /dev/null 2>&1 || { echo "::error file=$f::built but not committed"; exit 1; }
           done
+
+      - name: Every wasm/*.cpp has a built module
+        run: node scripts/check-wasm.mjs
+
       - name: Smoke test
         run: node tests/smoke.mjs
+
       - name: LRUCache test
         run: node tests/lrucache.test.mjs
+
       - name: LRUCache differential fuzz test
         run: node tests/lrucache.fuzz.mjs
+
       - name: LRUCache benchmark module test
         run: node tests/lrucache.bench.test.mjs
+
       - name: Stats test
         run: node tests/bench-stats.test.mjs
+
       - name: Claim evaluator tests
         run: node tests/lrucache-claims.test.mjs
+
       - name: LRUCache claim verification
         run: node tests/lrucache.verify.test.mjs
+
+      - name: Rulesets match the workflow job names
+        run: node tests/rulesets.test.mjs

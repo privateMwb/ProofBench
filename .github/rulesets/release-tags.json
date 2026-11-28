@@ -1,0 +1,33 @@
+{
+  "name": "release-tags",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "privateMwb/ProofBench",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "refs/tags/v*"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "non_fast_forward"
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": 287952182,
+      "actor_type": "User",
+      "bypass_mode": "always"
+    }
+  ]
+}

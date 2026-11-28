@@ -1,0 +1,70 @@
+# ============================================================
+# .github/workflows/release.yml
+# Publishes a GitHub Release whenever a v* tag is pushed, with the
+# site (site/, built WASM included) attached as a zip so it can be
+# self-hosted. Release notes come from .github/releases/<tag>.md when
+# that file exists, and are generated from the merged pull requests
+# when it does not. A tag containing a hyphen (v1.0.0-rc.1) is
+# published as a pre-release.
+#
+# Nothing is compiled here: the site is released exactly as committed,
+# which is also what Vercel serves. The check below fails the release
+# if a wasm/*.cpp module has no built counterpart.
+# ============================================================
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to release (e.g. v1.0.0), for manual test runs"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Resolve tag
+        id: resolve_tag
+        run: echo "tag=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify the tree is releasable
+        run: node scripts/check-wasm.mjs
+
+      - name: Find release notes
+        id: notes
+        run: |
+          file=".github/releases/${{ steps.resolve_tag.outputs.tag }}.md"
+          if [ -f "$file" ]; then echo "path=$file" >> "$GITHUB_OUTPUT"; else echo "path=" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Package the site
+        run: |
+          cd site
+          zip -qr "../proofbench-site-${{ steps.resolve_tag.outputs.tag }}.zip" .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.resolve_tag.outputs.tag }}
+          body_path: ${{ steps.notes.outputs.path }}
+          generate_release_notes: ${{ steps.notes.outputs.path == '' }}
+          prerelease: ${{ contains(steps.resolve_tag.outputs.tag, '-') }}
+          files: proofbench-site-${{ steps.resolve_tag.outputs.tag }}.zip

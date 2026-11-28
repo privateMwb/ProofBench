@@ -1,0 +1,43 @@
+# ============================================================
+# .github/workflows/codeql.yml
+# Security-focused static analysis of the JavaScript (site/js/, tests/
+# and scripts/). JavaScript is interpreted, so "none" build-mode extracts
+# straight from source. Also runs weekly so findings surface as
+# CodeQL's query packs improve, even when the code hasn't changed.
+#
+# The C++ is not analysed here: the libraries under libs/ are separate
+# repositories with their own CodeQL, sanitizer and fuzzing workflows.
+# ============================================================
+
+name: CodeQL
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday
+
+jobs:
+  analyze:
+    name: Analyze (javascript-typescript)
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: "/language:javascript-typescript"

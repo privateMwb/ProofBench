@@ -1,1 +1,23 @@
-{ "private": true, "type": "module" }
+{
+  "name": "proofbench",
+  "private": true,
+  "type": "module",
+  "description": "Libraries that prove their own claims: run, benchmark and verify C++ libraries live in the browser via WebAssembly.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/privateMwb/ProofBench.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check-wasm.mjs",
+    "lint": "oxlint",
+    "test": "node tests/smoke.mjs && node tests/lrucache.test.mjs && node tests/lrucache.fuzz.mjs && node tests/lrucache.bench.test.mjs && node tests/bench-stats.test.mjs && node tests/lrucache-claims.test.mjs && node tests/lrucache.verify.test.mjs && node tests/rulesets.test.mjs",
+    "verify": "npm run check && npm run lint && npm test"
+  },
+  "devDependencies": {
+    "oxlint": "^1.95.0"
+  }
+}

@@ -1,0 +1,50 @@
+# ============================================================
+# .github/dependabot.yml
+#
+# - github-actions: keeps workflow action versions current.
+# - npm: keeps the dev tooling (oxlint) in package.json current.
+# - gitsubmodule: opens a pull request when a library under libs/ has
+#   new commits on its default branch, so the site never silently
+#   falls behind the library it is proving claims about.
+#
+# ProofBench has no runtime dependencies. The Emscripten version is
+# pinned in .emscripten-version; bump that by hand, then rebuild and
+# commit site/wasm/.
+# ============================================================
+
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    groups:
+      codeql-action:
+        patterns:
+          - "github/codeql-action/*"
+      actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "npm"
+    groups:
+      npm:
+        patterns:
+          - "*"
+
+  - package-ecosystem: "gitsubmodule"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "libs"

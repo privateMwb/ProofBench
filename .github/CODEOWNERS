@@ -1,0 +1,21 @@
+# CODEOWNERS
+#
+# Who is automatically requested for review when a pull request touches
+# matching paths. The last matching pattern wins.
+
+# Default owner for everything in the repo.
+* @privateMwb
+
+# Build, deploy and security-sensitive paths. The WASM is built from the
+# C++ here and served as-is, so the build scripts, the CI that checks it,
+# the worker that loads it and the pinned toolchain deserve a second look.
+/.github/                       @privateMwb
+/scripts/                       @privateMwb
+/wasm/                          @privateMwb
+/site/js/wasm-worker.js         @privateMwb
+/site/js/wasm-client.js         @privateMwb
+/vercel.json                    @privateMwb
+/.emscripten-version            @privateMwb
+/.gitmodules                    @privateMwb
+/libs/                          @privateMwb
+/SECURITY.md                    @privateMwb
