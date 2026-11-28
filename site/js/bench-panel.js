@@ -105,7 +105,7 @@ export function initBenchPanel(root, cfg) {
   const env = el('details', { class: 'note' },
     el('summary', { text: 'How this is measured' }),
     el('p', { text: cfg.baselineNote }),
-    el('p', { text: 'Both implementations get identical keys and the same operations, compiled with the same flags. Setup is not timed. Rounds alternate order (A,B then B,A) and two warm-up rounds are discarded. Timings are WebAssembly in your browser, not native speed, and browser timers are deliberately coarse, so each sample runs long and the median is reported.' }),
+    el('p', { text: 'Both implementations get identical keys and the same operations, compiled with the same flags. Keys are scrambled so neither side benefits from consecutive integers. Setup is not timed. Rounds alternate order (A,B then B,A) and two warm-up rounds are discarded. Timings are WebAssembly in your browser, not native speed, and browser timers are deliberately coarse, so each sample runs long and the median is reported.' }),
     el('p', { text: `Your browser reports ${navigator.hardwareConcurrency || '?'} logical cores. ${navigator.userAgent}` }),
   );
 

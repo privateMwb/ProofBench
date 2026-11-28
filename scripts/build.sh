@@ -21,9 +21,12 @@ mkdir -p "$OUT"
 for src in wasm/*.cpp; do
   name="$(basename "$src" .cpp)"
   echo "building $name"
+  # Modules named *_verify inject exceptions, so they need C++ exceptions enabled.
+  EXTRA=()
+  case "$name" in *_verify) EXTRA+=(-fwasm-exceptions) ;; esac
   emcc "$src" -o "$OUT/$name.js" \
     -std=c++23 -O2 -Wall -Wextra \
-    "${INC[@]}" \
+    ${INC[@]+"${INC[@]}"} ${EXTRA[@]+"${EXTRA[@]}"} \
     -sMODULARIZE=1 -sEXPORT_ES6=1 -sWASM_BIGINT=1 \
     -sEXPORT_NAME="create_${name}" \
     -sENVIRONMENT=web,worker,node \

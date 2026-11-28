@@ -33,3 +33,7 @@ jobs:
         run: node tests/lrucache.bench.test.mjs
       - name: Stats test
         run: node tests/bench-stats.test.mjs
+      - name: Claim evaluator tests
+        run: node tests/lrucache-claims.test.mjs
+      - name: LRUCache claim verification
+        run: node tests/lrucache.verify.test.mjs

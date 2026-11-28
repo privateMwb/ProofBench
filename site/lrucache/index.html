@@ -64,13 +64,13 @@
       <h2 id="bench">3 · Benchmark it</h2>
     </section>
 
-    <section class="panel stub" aria-labelledby="verify">
+    <section class="panel" id="verify-root" aria-labelledby="verify">
       <h2 id="verify">4 · Verify it</h2>
-      <p class="note">Coming in Phase 4: live checks for claims like "zero heap allocations in steady state" and "strong exception guarantee on insert".</p>
     </section>
   </main>
   <footer>Source: <a href="https://github.com/privateMwb/LRUCache">privateMwb/LRUCache</a>. Timings are WebAssembly in your browser, not native speed.</footer>
   <script type="module" src="../js/lrucache.js"></script>
   <script type="module" src="../js/lrucache-bench.js"></script>
+  <script type="module" src="../js/lrucache-verify.js"></script>
 </body>
 </html>

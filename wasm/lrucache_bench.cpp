@@ -6,11 +6,10 @@
 #include <CachePro/LRUCache.h>
 
 #include "../bench/harness.hpp"
+#include "../bench/std_lru.hpp"
 
 #include <cstddef>
 #include <cstdint>
-#include <list>
-#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -18,41 +17,12 @@ namespace {
 
 using Fast = CachePro::LRUCache<int, int>;
 
-// The baseline most people would write. reserve() is called up front so it never
-// rehashes: this gives the baseline its best case.
-class StdLRU {
-    using Item = std::pair<int, int>;
-    std::size_t cap_;
-    std::list<Item> items_;
-    std::unordered_map<int, std::list<Item>::iterator> index_;
-
-  public:
-    explicit StdLRU(std::size_t cap) : cap_(cap) { index_.reserve(cap); }
-
-    int* get(int key) {
-        auto it = index_.find(key);
-        if (it == index_.end()) return nullptr;
-        items_.splice(items_.begin(), items_, it->second);
-        return &it->second->second;
-    }
-
-    void put(int key, int value) {
-        auto it = index_.find(key);
-        if (it != index_.end()) {
-            it->second->second = value;
-            items_.splice(items_.begin(), items_, it->second);
-            return;
-        }
-        if (items_.size() == cap_) {
-            index_.erase(items_.back().first);
-            items_.pop_back();
-        }
-        items_.emplace_front(key, value);
-        index_[key] = items_.begin();
-    }
-
-    std::size_t size() const { return items_.size(); }
-};
+// Maps a rank (0, 1, 2, ...) to a distinct, well-spread 31-bit key. The multiplier is
+// odd, so this is a bijection on 31-bit values. Without it, keys 0..N-1 would hit
+// std::hash<int> (the identity) in consecutive buckets, the best case for the baseline.
+inline int scramble_key(int rank) {
+    return static_cast<int>((static_cast<std::uint32_t>(rank) * 0x9E3779B1U) & 0x7FFFFFFFU);
+}
 
 constexpr int kMaxCapacity = 300'000;
 constexpr int kMaxOps = 5'000'000;
@@ -63,6 +33,7 @@ bench::Comparison g_cmp;
 
 // Workloads:
 //   0  lookup hits   : full cache, random get() of resident keys (100% hits)
+//   (keys in workloads 0 and 1 are scrambled so neither side gets sequential integers)
 //   1  cache-aside   : get(); on a miss put(); Zipf keys over 10x capacity
 //   2  insert+evict  : put() of fresh random keys into a full cache
 // Setup (construction, prefill) is untimed; only the op loop is timed.
@@ -77,7 +48,7 @@ bench::SampleOut run_sample(int workload, const std::vector<int>& keys, std::siz
     std::uint64_t checksum = 0;
 
     if (workload == 0) {
-        for (int i = 0; i < capacity; ++i) cache.put(i, i);
+        for (int i = 0; i < capacity; ++i) cache.put(scramble_key(i), i);
         t0 = bench::now_ms();
         for (int i = 0; i < ops; ++i) {
             const int* p = cache.get(keys[static_cast<std::size_t>(i)]);
@@ -135,10 +106,12 @@ int bench_run(int workload, int capacity, int ops, int samples, int skew_x100, i
     std::vector<int> keys;
     if (workload == 0) {
         keys = bench::make_keys_uniform(static_cast<std::size_t>(ops), capacity, useed);
+        for (int& k : keys) k = scramble_key(k);
     } else if (workload == 1) {
         prefill = 2 * static_cast<std::size_t>(capacity);
         keys = bench::make_keys_zipf(prefill + static_cast<std::size_t>(ops), capacity * 10,
                                      skew_x100 / 100.0, useed);
+        for (int& k : keys) k = scramble_key(k);
     } else {
         prefill = static_cast<std::size_t>(capacity);
         keys = bench::make_keys_random31(prefill + static_cast<std::size_t>(ops), useed);

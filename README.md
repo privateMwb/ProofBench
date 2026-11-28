@@ -22,6 +22,8 @@ node tests\lrucache.test.mjs
 node tests\lrucache.fuzz.mjs
 node tests\lrucache.bench.test.mjs
 node tests\bench-stats.test.mjs
+node tests\lrucache-claims.test.mjs
+node tests\lrucache.verify.test.mjs
 python -m http.server -d site 8000   # open http://localhost:8000
 ```
 
@@ -37,7 +39,9 @@ On Linux/macOS use `source ~/emsdk/emsdk_env.sh` and `./scripts/build.sh`.
 | `site/js/wasm-worker.js`, `wasm-client.js` | Shared Web Worker layer used by every library page |
 | `site/js/libraries.js` | Library list for the landing page |
 | `site/js/bench-panel.js`, `bench-stats.js` | Reusable benchmark panel and statistics |
-| `bench/harness.hpp` | Timer, key generators and the interleaved A/B runner |
+| `bench/harness.hpp`, `bench/std_lru.hpp` | Timer, key generators, interleaved A/B runner, and the shared baseline LRU |
+| `site/js/verify-panel.js`, `lrucache-claims.js` | Reusable "Verify it" panel, plus the claims and their evaluators |
+| `wasm/*_verify.cpp` | Verification modules; built with C++ exceptions and a counting operator new |
 | `tests/` | Node tests that load the built WASM |
 | `scripts/` | `build.ps1` (Windows) and `build.sh` (Linux/CI) |
 
@@ -53,6 +57,6 @@ On Linux/macOS use `source ~/emsdk/emsdk_env.sh` and `./scripts/build.sh`.
 - [x] Phase 1: toolchain, CI, deploy
 - [x] Phase 2: LRUCache page (try it)
 - [x] Phase 3: benchmark harness (LRUCache vs std::list + unordered_map)
-- [ ] Phase 4: verify-the-claim panels
+- [x] Phase 4: verify-the-claim panels (LRUCache: allocations, O(1), exceptions, statistics)
 - [ ] Phase 5: more libraries
 - [ ] Phase 6: polish

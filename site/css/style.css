@@ -83,3 +83,17 @@ svg.chart .line-a { stroke: var(--accent); }
 svg.chart .line-b { stroke: var(--muted); }
 svg.chart .dot.line-a { fill: var(--accent); stroke: none; }
 svg.chart .dot.line-b { fill: var(--muted); stroke: none; }
+
+/* ---- verify panel ---- */
+article.claim { border: 1px solid var(--border); border-radius: 10px; padding: .9rem 1rem; margin: .9rem 0; background: var(--bg); }
+article.claim blockquote { margin: 0 0 .4rem; padding-left: .8rem; border-left: 3px solid var(--accent); color: var(--muted); font-style: italic; }
+.claim-head { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.claim-head h3 { margin: .2rem 0; font-size: 1.05rem; }
+.status { font-size: .8rem; padding: .1rem .6rem; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.st-pass { color: var(--ok); border-color: var(--ok); }
+.st-fail, .st-error { color: var(--danger); border-color: var(--danger); }
+.st-partial { color: #b7791f; border-color: #b7791f; }
+@media (prefers-color-scheme: dark) { .st-partial { color: #e0b35a; border-color: #e0b35a; } }
+.table-scroll { overflow-x: auto; }
+table.results caption { text-align: left; color: var(--muted); font-size: .85rem; padding-bottom: .3rem; caption-side: top; }
+table.results th[scope=row] { font-weight: 500; }

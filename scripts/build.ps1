@@ -24,9 +24,12 @@ New-Item -ItemType Directory -Force $out | Out-Null
 foreach ($src in Get-ChildItem wasm -Filter *.cpp) {
     $name = $src.BaseName
     Write-Host "building $name"
+    # Modules named *_verify inject exceptions, so they need C++ exceptions enabled.
+    $extra = @()
+    if ($name -like '*_verify') { $extra += '-fwasm-exceptions' }
     emcc "wasm/$($src.Name)" -o "$out/$name.js" `
         -std=c++23 -O2 -Wall -Wextra `
-        $inc `
+        $inc $extra `
         "-sMODULARIZE=1" "-sEXPORT_ES6=1" "-sWASM_BIGINT=1" `
         "-sEXPORT_NAME=create_$name" `
         "-sENVIRONMENT=web,worker,node" `
